@@ -107,8 +107,7 @@ class _NewExpenseState extends State<NewExpense> {
                 ),
               ),
               const SizedBox(width: 16),
-              Expanded(
-                child: Row(
+              Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -123,7 +122,7 @@ class _NewExpenseState extends State<NewExpense> {
                     )
                   ],
                 ),
-              )
+              // )
             ],
           ),
           const SizedBox(height: 16),

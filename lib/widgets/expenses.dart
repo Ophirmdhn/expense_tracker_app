@@ -26,7 +26,7 @@ class _ExpensesState extends State<Expenses> {
     ),
   ];
 
-  void _openAddExpensesOverlay() {
+  void _openAddExpensesOverlay() { // membuka bottom sheet
     showModalBottomSheet(
       isScrollControlled: true, // membuat bottom sheet memenuhi layar
       context: context, 
@@ -34,20 +34,47 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
-  void _addExpense(Expense expense) {
+  void _addExpense(Expense expense) { // menambahkan expense baru ke dalam list
     setState(() {
       _registeredExpenses.add(expense);
     });
   }
 
-  void _removeExpense(Expense expense) {
+  void _removeExpense(Expense expense) { // menghapus expense
+    final expenseIndex = _registeredExpenses.indexOf(expense);
     setState(() {
       _registeredExpenses.remove(expense);
     });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar( // memunculkan snacbar ketiika menghapus expense
+      SnackBar(
+        duration: const Duration(seconds: 3),
+        content: const Text("Expense Delete"),
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              _registeredExpenses.insert(expenseIndex, expense);
+            });
+          },
+        ),
+      )
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget mainContent = const Center(
+      child: Text("Belum ada data pengeluaran"),
+    );
+
+    if (_registeredExpenses.isNotEmpty) {
+      mainContent = ExpensesList(
+        expenses: _registeredExpenses,
+        onRemoveExpense: _removeExpense,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Expense Tracker"),
@@ -60,11 +87,10 @@ class _ExpensesState extends State<Expenses> {
       ),
       body: Column(
         children: [
-          const Text("The Chart"),
           Expanded(
-            child: ExpensesList(
-              expenses: _registeredExpenses,
-              onRemoveExpense: _removeExpense,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: mainContent,
             )
           )
         ],
